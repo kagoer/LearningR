@@ -1,0 +1,27 @@
+---
+title: "Reproducible Document"
+author: "rostools" 
+format: html
+---
+
+```{r setup}
+library(tidyverse)
+```
+
+```{r}
+2+2
+```
+## About me 
+
+- Katrine Bovién Gørlitz 
+- Medicinsk Diagnostic Center 
+- Central Denmark Hosiptal Region 
+
+I am doing a *PhD* in **Diabetes Technology** 
+
+## Simple code 
+```{r}
+3*3
+```
+
+##Testing for Git
