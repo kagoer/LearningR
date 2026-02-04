@@ -6,7 +6,7 @@ rostools teaching R
 
 TODO: Give a brief description of what your project is about
 
-This project...
+This project is a part of my introduction program to R and GitHub
 
 # Brief description of folder and file contents
 
