@@ -10,3 +10,4 @@
 .httr-oauth
 *.html
 _files/
+*_files/
