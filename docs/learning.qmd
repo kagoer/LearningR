@@ -6,6 +6,8 @@ format: html
 
 ```{r setup}
 library(tidyverse)
+
+post_meal_data <- read_csv2(here::here("data/post-meal-insulin.csv"))
 ```
 
 ```{r}
@@ -24,4 +26,12 @@ I am doing a *PhD* in **Diabetes Technology**
 3*3
 ```
 
-##Testing for Git
+## Testing for Git
+
+## Showing the data 
+```{r}
+post_meal_data
+
+glimpse(post_meal_data)
+```
+
