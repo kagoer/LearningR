@@ -13,6 +13,20 @@ library(tidyverse)
 post_meal_data <- read_csv2(here::here("data/post-meal-insulin.csv"))
 
 small_post_meal_data <- select(post_meal_data, id, Age, BMI, Group, auc_pg, auc_ins, glykemi)
+
+tidier_post_meal_data <- small_post_meal_data |>
+  rename(
+    auc_glucose = auc_pg,
+    auc_insulin = auc_ins
+  ) |>
+  filter(glykemi == 0) |>
+  select(-glykemi)
+
+tidied_post_meal_data <- tidier_post_meal_data |>
+  mutate(
+    insulin_glucose_ratio = auc_insulin / auc_glucose,
+    Group = if_else(Group == "CTR", "Control", "First-degree relative")
+  )
 ```
 
 ```{r}
@@ -121,11 +135,11 @@ select(post_meal_data, contains("0"))
 ## Renaming columns 
 
 ```{r}
-small_post_meal_data |> 
-
-    rename(
-      auc_glucose = auc_pg,
-      auc_insulin = auc_ins)
+small_post_meal_data |>
+  rename(
+    auc_glucose = auc_pg,
+    auc_insulin = auc_ins
+  )
 ```
 
 
@@ -148,8 +162,8 @@ post_meal_data |>
   )
 
 # Task 4.
-post_meal_data |> 
-  select(id, BMI, Length, Weight, Age) |> 
+post_meal_data |>
+  select(id, BMI, Length, Weight, Age) |>
   rename(Height = Length)
 ```
 
@@ -157,25 +171,67 @@ post_meal_data |>
 ## Filtering data 
 
 ```{r}
-small_post_meal_data |> 
+small_post_meal_data |>
   filter(glykemi == 1)
 
-small_post_meal_data |> 
+small_post_meal_data |>
   filter(BMI >= 25)
 
-small_post_meal_data |> 
+small_post_meal_data |>
   filter(Group == "CTR")
 
-small_post_meal_data |> 
+small_post_meal_data |>
   filter(Group == "CTR", BMI >= 25) # komma (,) virker i dette tilfælde som et &. Bar (|) virker som eller
-
-tidier_post_meal_data <- small_post_meal_data |> 
-  rename(
-    auc_glucose = auc_pg, 
-    auc_insulin = auc_ins
-  ) |> 
-  filter(glykemi == 0) |> 
-  select(-glykemi)
 ```
 
+##Modify data 
 
+```{r}
+tidier_post_meal_data |>
+  mutate(insulin_glucose_ratio = auc_insulin / auc_glucose)
+```
+
+## Practice with filter and mutate
+
+# Task 1.
+```{r}
+post_meal_data |>
+  filter(BMI >= 25 & BMI <= 40 & Group == "FDR")
+```
+#Svar tast 1 = 8 deltagere 
+
+
+# Task 2.
+```{r}
+post_meal_data |>
+  mutate(
+    percent_body_fat = (Fat.mass.DXA / Weight) * 100
+  ) |>
+  filter(percent_body_fat > 30)
+```
+#Svar task 2 = 10 deltagere 
+
+
+## Visualizing with a jitter plot 
+
+```{r}
+tidied_post_meal_data |>
+  mutate(overweight = if_else(BMI >= 25, "Overweight", "Not overweight")) |>
+  ggplot(aes(x = overweight, y = insulin_glucose_ratio)) +
+  geom_jitter()
+```
+
+## Plotting three or more variables 
+
+```{r}
+tidied_post_meal_data |>
+  filter(BMI < 30) |>
+  mutate(young = if_else(Age < 40, "Young", "Old")) |>
+  ggplot(aes(x = BMI, y = insulin_glucose_ratio, colour = Group)) +
+  geom_point() +
+  facet_grid(cols = vars(young)) +
+  labs(
+    x = "Body mass index (BMI)",
+    y = "Insulin to glucose rato"
+  )
+```
